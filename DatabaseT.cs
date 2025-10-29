@@ -21,19 +21,20 @@ namespace Drafts.Database
         int Index { get; }
     }
 
-    public class Database<T> : ScriptableObject where T : Object, IDatabaseItemInternal
+    public class DatabaseSO<T> : ScriptableObject where T : Object, IDatabaseItemInternal
     {
+        [Header("Readonly")]
         [SerializeField] private T[] items;
 
-        private Dictionary<string, T> _map;
-        private Dictionary<string, T> Map => _map ??= Items.ToDictionary(t => t.Id, t => t);
+        private Dictionary<string, T> _idMap;
+        private Dictionary<string, T> IdMap => _idMap ??= Items.ToDictionary(t => t.Id, t => t);
         private readonly Dictionary<Type, IEnumerable> _categoryMap = new();
 
         public IEnumerable<T> Items => items.Skip(1);
         public T this[int index] => items[index];
         public T Get(int index) => index < 1 || index > items.Length ? null : items[index];
         public I Get<I>(int index) => Get(index) is I i ? i : default;
-        public T Find(string id) => Map.GetValueOrDefault(id);
+        public T Find(string id) => IdMap.GetValueOrDefault(id);
         public I Find<I>(string id) => Find(id) is I i ? i : default;
         public int IdToIndex(string id) => Find(id).Index;
         public string IndexToId(int index) => Get(index).Id;
@@ -54,7 +55,7 @@ namespace Drafts.Database
         }
 
 #if UNITY_EDITOR
-        protected void FetchItemsFromAssets(string path = "Assets")
+        public void FetchItemsFromAssets(string path = "Assets")
         {
             var guids = UnityEditor.AssetDatabase.FindAssets($"t:{typeof(T).Name}", new[] { path });
             var paths = guids.Select(UnityEditor.AssetDatabase.GUIDToAssetPath);
