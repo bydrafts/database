@@ -52,6 +52,9 @@ namespace Drafts.Database
             var index = 1;
             foreach (var item in items.Skip(1))
                 item.SetIndex(index++);
+            
+            _idMap = null;
+            _categoryMap.Clear();
         }
 
 #if UNITY_EDITOR
