@@ -7,19 +7,18 @@ namespace Drafts.Database
     {
         [SerializeField] protected Sprite icon;
         
-        [NonSerialized] protected int _index;
         [NonSerialized] protected string _id;
         [NonSerialized] protected string _displayName;
         [NonSerialized] protected string _description;
 
+        public virtual int Index { get; private set; }
         public virtual string Id => _id ??= $"{GetType().Name} {name}".ToLower();
-        public virtual int Index => _index;
         public virtual string DisplayName => _displayName ??= name;
         public virtual string Description => _description ??= Id + "-desc";
         public virtual Sprite Icon => icon;
         
         public virtual bool Discovered { get; set; }
 
-        void IDatabaseItemInternal.SetIndex(int i) => index = i;
+        void IDatabaseItemInternal.SetIndex(int i) => Index = i;
     }
 }

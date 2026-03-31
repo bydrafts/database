@@ -49,12 +49,15 @@ namespace Drafts.Database
         protected void __SetItems(IEnumerable<T> newItems)
         {
             items = newItems.Prepend(null).ToArray();
-            var index = 1;
-            foreach (var item in items.Skip(1))
-                item.SetIndex(index++);
-            
+            SetRuntimeIndexes();
             _idMap = null;
             _categoryMap.Clear();
+        }
+        
+        public void SetRuntimeIndexes()
+        {
+            for (var i = 1; i < items.Lenght; i++)
+                items[i].SetIndex(i);
         }
 
 #if UNITY_EDITOR
