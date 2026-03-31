@@ -56,7 +56,7 @@ namespace Drafts.Database
         
         public void SetRuntimeIndexes()
         {
-            for (var i = 1; i < items.Lenght; i++)
+            for (var i = 1; i < items.Length; i++)
                 items[i].SetIndex(i);
         }
 
