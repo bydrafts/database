@@ -12,7 +12,7 @@ namespace Drafts.Database
         [NonSerialized] protected string _description;
 
         public virtual int Index { get; private set; }
-        public virtual string Id => _id ??= $"{GetType().Name} {name}".ToLower();
+        public virtual object Id => _id ??= $"{GetType().Name} {name}".ToLower();
         public virtual string DisplayName => _displayName ??= name;
         public virtual string Description => _description ??= Id + "-desc";
         public virtual Sprite Icon => icon;
