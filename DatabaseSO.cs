@@ -10,34 +10,23 @@ using Object = UnityEngine.Object;
 
 namespace Drafts.Database
 {
-    public interface IDatabaseItemInternal : IDatabaseItem
-    {
-        void SetIndex(int index);
-    }
-
-    public interface IDatabaseItem
-    {
-        object Id { get; }
-        int Index { get; }
-    }
-
     public class DatabaseSO<T> : ScriptableObject where T : Object, IDatabaseItemInternal
     {
         [Header("Readonly")]
         [SerializeField] private T[] items;
 
-        private Dictionary<object, T> _idMap;
-        private Dictionary<object, T> IdMap => _idMap ??= Items.ToDictionary(t => t.Id, t => t);
+        private Dictionary<uint, T> _idMap;
+        private Dictionary<uint, T> IdMap => _idMap ??= Items.ToDictionary(t => t.Id, t => t);
         private readonly Dictionary<Type, IEnumerable> _categoryMap = new();
 
         public IEnumerable<T> Items => items.Skip(1);
         public T this[int index] => items[index];
         public T Get(int index) => index < 1 || index > items.Length ? null : items[index];
         public I Get<I>(int index) => Get(index) is I i ? i : default;
-        public T Find(object id) => IdMap.GetValueOrDefault(id);
-        public I Find<I>(object id) => Find(id) is I i ? i : default;
-        public int IdToIndex(object id) => Find(id).Index;
-        public object IndexToId(int index) => Get(index).Id;
+        public T Find(uint id) => IdMap.GetValueOrDefault(id);
+        public I Find<I>(uint id) => Find(id) is I i ? i : default;
+        public int IdToIndex(uint id) => Find(id).Index;
+        public uint IndexToId(int index) => Get(index).Id;
 
         public IReadOnlyList<I> GetAll<I>()
         {
@@ -53,6 +42,12 @@ namespace Drafts.Database
                 items[i].SetIndex(i); // runtime index
             _idMap = null;
             _categoryMap.Clear();
+        }
+
+        public void UpdateIndexes()
+        {
+            for (var i = 1; i < items.Length; i++)
+                items[i].SetIndex(i);
         }
 
 #if UNITY_EDITOR
