@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 #if ENABLE_LOCALIZATION
@@ -9,6 +8,8 @@ namespace Drafts.Database
 {
     public abstract class DatabaseItem : ScriptableObject, IDatabaseItemInternal
     {
+        public static UIntGenerator IdGenerator { get; } = new();
+
         [SerializeField] protected uint id;
 
 #if ENABLE_LOCALIZATION
@@ -30,25 +31,8 @@ namespace Drafts.Database
         public virtual bool Discovered { get; set; }
 
         void IDatabaseItemInternal.SetIndex(int i) => Index = i;
+        
+        [ContextMenu("Reroll Id")]
+        private void RerollId() => id = IdGenerator.Generate();
     }
-
-#if ENABLE_LOCALIZATION
-    public static class ObjectLocalizationHelper
-    {
-        public static string Localize(this LocalizedString s, Object ctx, [CallerMemberName] string m = null)
-        {
-            try
-            {
-                return s.GetLocalizedString();
-            }
-            catch
-            {
-                var n = s.TableReference.TableCollectionName;
-                var k = s.TableEntryReference.Key;
-                Debug.LogWarning($"Localization missing: {n} - {k}", ctx);
-                return $"{ctx?.name} {m}";
-            }
-        }
-    }
-#endif
 }
