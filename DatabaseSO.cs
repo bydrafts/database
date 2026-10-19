@@ -10,7 +10,7 @@ using Object = UnityEngine.Object;
 
 namespace Drafts.Database
 {
-    public class DatabaseSO<T> : ScriptableObject where T : Object, IDatabaseItemInternal
+    public class DatabaseSO<T> : ScriptableObject, IDatabase where T : Object, IDatabaseItemInternal
     {
         [Header("Readonly")]
         [SerializeField] private T[] items;
@@ -19,6 +19,7 @@ namespace Drafts.Database
         private Dictionary<uint, T> IdMap => _idMap ??= Items.ToDictionary(t => t.Id, t => t);
         private readonly Dictionary<Type, IEnumerable> _categoryMap = new();
 
+        IEnumerable IDatabase.Items => items.Skip(1);
         public IEnumerable<T> Items => items.Skip(1);
         public T this[int index] => items[index];
         public T Get(int index) => index < 1 || index > items.Length ? null : items[index];
