@@ -5,6 +5,7 @@ namespace Drafts.Database
 {
     public class UIntGenerator : IDisposable
     {
+        public static readonly UIntGenerator Instance = new();
         private readonly byte[] _bytes = new byte[4];
         private readonly RandomNumberGenerator _rng = RandomNumberGenerator.Create();
 

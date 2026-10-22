@@ -8,8 +8,6 @@ namespace Drafts.Database
 {
     public abstract class DatabaseItem : ScriptableObject, IDatabaseItemInternal
     {
-        public static UIntGenerator IdGenerator { get; } = new();
-
         [SerializeField] protected uint id;
 
 #if ENABLE_LOCALIZATION
@@ -31,8 +29,8 @@ namespace Drafts.Database
         public virtual bool Discovered { get; set; }
 
         void IDatabaseItemInternal.SetIndex(int i) => Index = i;
-        
+
         [ContextMenu("Reroll Id")]
-        private void RerollId() => id = IdGenerator.Generate();
+        private void RerollId() => id = UIntGenerator.Instance.Generate();
     }
 }
